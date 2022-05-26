@@ -1,12 +1,9 @@
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/app';
-import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { getStorage, ref } from 'firebase/storage';
-import { getDatabase } from 'firebase/database';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
+import 'firebase/database';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,24 +20,21 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebaseApp.firestore();
+const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
-const storage = getStorage(app);
-const imageStorage = ref(storage, 'images');
-const audioStorage = ref(storage, 'audios');
-const db = getFirestore(app);
-const database = getDatabase(app);
-const auth = getAuth(app);
+const storage = firebase.storage().ref('images');
+const audioStorage = firebase.storage().ref('audio');
 const createTimeStamp = firebase.firestore.FieldValue.serverTimestamp;
-const serverTimestamp = firebase.firestore.ServerValue.TIMESTAMP;
+const serverTimestamp = firebase.database.ServerValue.TIMESTAMP;
+
 export {
   db,
   storage,
   auth,
-  database,
+  serverTimestamp,
   provider,
-  imageStorage,
   audioStorage,
   createTimeStamp,
-  serverTimestamp,
 };

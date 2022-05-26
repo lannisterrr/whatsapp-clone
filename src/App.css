@@ -7,6 +7,9 @@
   user-select: none !important;
   -webkit-tap-highlight-color: transparent !important;
 }
+body {
+  overflow: hidden;
+}
 
 .app {
   display: grid;
