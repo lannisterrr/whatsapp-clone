@@ -16,10 +16,14 @@ import { Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import SidebarList from './SidebarList';
 import useRooms from '../hooks/useRooms';
+import useUsers from '../hooks/useUsers';
+import useChats from '../hooks/useChats';
 
 export default function Sidebar({ user, page }) {
   const rooms = useRooms();
-  console.log(rooms);
+  const users = useUsers(user);
+  const chats = useChats(user);
+  console.log(users);
   const [menu, setMenu] = useState(1);
 
   const handleCreateRoom = () => {
@@ -118,24 +122,24 @@ export default function Sidebar({ user, page }) {
       {page.isMobile ? (
         <Switch>
           <Route path="/chats">
-            <SidebarList title="Chats" data={[]} />
+            <SidebarList title="Chats" data={chats} />
           </Route>
           <Route path="/rooms">
             <SidebarList title="Rooms" data={rooms} />
           </Route>
           <Route path="/users">
-            <SidebarList title="Users" data={[]} />
+            <SidebarList title="Users" data={users} />
           </Route>
           <Route path="/search">
             <SidebarList title="Search Results" data={[]} />
           </Route>
         </Switch>
       ) : menu === 1 ? (
-        <SidebarList title="Chats" data={[]} />
+        <SidebarList title="Chats" data={chats} />
       ) : menu === 2 ? (
         <SidebarList title="Rooms" data={rooms} />
       ) : menu === 3 ? (
-        <SidebarList title="Users" data={[]} />
+        <SidebarList title="Users" data={users} />
       ) : menu === 4 ? (
         <SidebarList title="Search Results" data={[]} />
       ) : null}
