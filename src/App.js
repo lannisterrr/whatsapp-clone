@@ -17,10 +17,10 @@ export default function App() {
     <div className="app" style={{ ...page }}>
       <Redirect to={page.isMobile ? '/chats' : '/'} />
       <div className="app__body">
-        <Route path="room/:roomID">
+        <Sidebar user={user} page={page} />
+        <Route path="/room/:roomID">
           <Chat user={user} page={page} />
         </Route>
-        <Sidebar user={user} page={page} />
       </div>
     </div>
   );

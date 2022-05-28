@@ -7,7 +7,6 @@ export default function useUsers(user) {
   const query = db.collection('users').orderBy('timestamp', 'desc');
   const [snapshot] = useCollection(query);
 
-  console.log(snapshot);
   const users = [];
 
   // we have to make sure that we don't show the current user in the users tab
@@ -25,6 +24,5 @@ export default function useUsers(user) {
       }
     });
   }
-  console.log(users);
   return users;
 }

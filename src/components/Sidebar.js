@@ -23,9 +23,8 @@ export default function Sidebar({ user, page }) {
   const rooms = useRooms();
   const users = useUsers(user);
   const chats = useChats(user);
-  console.log(users);
+  const [searchResults, setSearchResults] = useState([]);
   const [menu, setMenu] = useState(1);
-
   const handleCreateRoom = () => {
     const roomName = prompt('What is your public room name ? ');
     if (roomName.trim()) {
@@ -35,6 +34,33 @@ export default function Sidebar({ user, page }) {
       });
     }
   };
+
+  async function handleSearchUserAndRooms(event) {
+    event.preventDefault();
+    const query = event.target.elements.search.value;
+    const userSnapshot = await db
+      .collection('users')
+      .where('name', '==', query)
+      .get();
+
+    const roomSnapshot = await db
+      .collection('rooms')
+      .where('name', '==', query)
+      .get();
+
+    const userResults = userSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    const roomResults = roomSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const searchResult = [...userResults, ...roomResults];
+    setMenu(4);
+    setSearchResults(searchResult);
+  }
 
   function handleSignOut() {
     auth.signOut();
@@ -72,11 +98,14 @@ export default function Sidebar({ user, page }) {
         </div>
       </div>
       <div className="sidebar__search">
-        <form className="sidebar__search--container">
+        <form
+          onSubmit={handleSearchUserAndRooms}
+          className="sidebar__search--container"
+        >
           <SearchOutlined />
           <input
             type="text"
-            placeholder="search for users or rooms"
+            placeholder="type full users or rooms name and press enter "
             id="search"
           />
         </form>
@@ -131,7 +160,7 @@ export default function Sidebar({ user, page }) {
             <SidebarList title="Users" data={users} />
           </Route>
           <Route path="/search">
-            <SidebarList title="Search Results" data={[]} />
+            <SidebarList title="Search Results" data={searchResults} />
           </Route>
         </Switch>
       ) : menu === 1 ? (
@@ -141,7 +170,7 @@ export default function Sidebar({ user, page }) {
       ) : menu === 3 ? (
         <SidebarList title="Users" data={users} />
       ) : menu === 4 ? (
-        <SidebarList title="Search Results" data={[]} />
+        <SidebarList title="Search Results" data={searchResults} />
       ) : null}
 
       <div className="sidebar__chat--addRoom">

@@ -1,6 +1,6 @@
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { db } from '../firebase';
-export default function useChats() {
+export default function useChats(user) {
   // collection -> /users/user.id/chats
 
   const query = user
