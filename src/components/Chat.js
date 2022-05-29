@@ -16,6 +16,7 @@ export default function Chat({ user, page }) {
   const [image, setImage] = useState(null);
   const [src, setSrc] = useState(''); // for the image preview
   const [input, setInput] = useState('');
+  const [audioId, setAudioId] = useState(''); // keep the track of audio that's currently playing
   const { roomID } = useParams();
   const history = useHistory();
   const messages = useChatMessages(roomID);
@@ -171,6 +172,7 @@ export default function Chat({ user, page }) {
         setImage={setImage}
         room={room}
         roomID={roomID}
+        setAudioId={setAudioId}
       />
     </div>
   );
