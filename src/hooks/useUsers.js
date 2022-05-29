@@ -8,17 +8,16 @@ export default function useUsers(user) {
   const [snapshot] = useCollection(query);
 
   const users = [];
-
   // we have to make sure that we don't show the current user in the users tab
   if (user) {
     snapshot?.docs.forEach(doc => {
       const id =
-        doc.id > user.id ? `${doc.id}${user.id}` : `${user.id}${doc.id}`;
+        doc.id > user.uid ? `${doc.id}${user.uid}` : `${user.uid}${doc.id}`;
 
       if (doc.id !== user.uid) {
         users.push({
           id,
-          userId: doc.id,
+          userID: doc.id,
           ...doc.data(),
         });
       }

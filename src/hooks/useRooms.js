@@ -2,7 +2,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import { db } from '../firebase';
 
 export default function useRooms() {
-  const query = db.collection('rooms').orderBy('timeStamp', 'desc');
+  const query = db.collection('rooms').orderBy('timestamp', 'desc');
   const [snapshot] = useCollection(query);
 
   // snapshot returns an array of all the documents in the query

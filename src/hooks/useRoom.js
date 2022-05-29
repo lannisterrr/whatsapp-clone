@@ -5,14 +5,13 @@ export default function useRoom(roomId, userId) {
   // here the composited userId comes to rescue to figure out if we are using rooms collection or users collection
   const isUserRoom = roomId.includes(userId);
 
-  const doc = isUserRoom ? roomId.replace(userId, '') : roomId;
+  const doc = isUserRoom ? roomId?.replace(userId, '') : roomId;
 
   const [snapshot] = useDocument(
     db.collection(isUserRoom ? 'users' : 'rooms').doc(doc)
   );
 
   if (!snapshot) return null;
-
   return {
     id: snapshot.id,
     photoURL:

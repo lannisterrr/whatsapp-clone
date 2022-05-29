@@ -30,7 +30,7 @@ export default function Sidebar({ user, page }) {
     if (roomName.trim()) {
       db.collection('rooms').add({
         name: roomName,
-        timeStamp: createTimeStamp(),
+        timestamp: createTimeStamp(),
       });
     }
   };

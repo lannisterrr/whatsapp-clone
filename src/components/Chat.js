@@ -6,11 +6,15 @@ import { ArrowBack, AddPhotoAlternate, MoreVert } from '@material-ui/icons';
 import ChatMessages from './ChatMessages';
 import ChatFooter from './ChatFooter';
 import MediaPreview from './MediaPreview';
+import Compressor from 'compressorjs';
+import { v4 as uuid } from 'uuid';
 import './Chat.css';
+import { createTimeStamp, db, storage } from '../firebase';
 
 export default function Chat({ user, page }) {
   const [image, setImage] = useState(null);
   const [src, setSrc] = useState(''); // for the image preview
+  const [input, setInput] = useState('');
   const { roomID } = useParams();
   const history = useHistory();
   const room = useRoom(roomID, user.uid);
@@ -33,6 +37,76 @@ export default function Chat({ user, page }) {
     setSrc('');
     setImage(null);
   }
+
+  function handleOnChange(event) {
+    setInput(event.target.value);
+  }
+
+  async function handleSendMessage(event) {
+    event.preventDefault();
+
+    if (input.trim() || (input === '' && image)) {
+      setInput('');
+      if (image) {
+        handleHidePreview();
+      }
+      const imageName = uuid();
+      const newMessage = image
+        ? {
+            name: user.displayName,
+            message: input,
+            uid: user.uid,
+            timestamp: createTimeStamp(),
+            time: new Date().toUTCString(),
+            imageUrl: 'uploading',
+            imageName,
+          }
+        : {
+            name: user.displayName,
+            message: input,
+            uid: user.uid,
+            timestamp: createTimeStamp(),
+            time: new Date().toUTCString(),
+          };
+
+      db.collection('users')
+        .doc(user.uid)
+        .collection('chats')
+        .doc(roomID)
+        .set({
+          name: room.name,
+          photoURL: room.photoURL || null,
+          timestamp: createTimeStamp(),
+        });
+
+      const doc = await db
+        .collection('rooms')
+        .doc(roomID)
+        .collection('messages')
+        .add(newMessage);
+
+      if (image) {
+        new Compressor(image, {
+          quality: 0.8,
+          maxWidth: 1920,
+          async success(result) {
+            setSrc('');
+            setImage(null);
+            await storage.child(imageName).put(result);
+            const url = await storage.child(imageName).getDownloadURL();
+            db.collection('rooms')
+              .doc(roomID)
+              .collection('messages')
+              .doc(doc.id)
+              .update({
+                imageUrl: url,
+              });
+          },
+        });
+      }
+    }
+  }
+
   return (
     <div className="chat">
       <div style={{ height: page.height }} className="chat__background" />
@@ -82,7 +156,16 @@ export default function Chat({ user, page }) {
         </div>
       </div>
       <MediaPreview src={src} handleHidePreview={handleHidePreview} />
-      <ChatFooter />
+      <ChatFooter
+        input={input}
+        handleOnChange={handleOnChange}
+        handleSendMessage={handleSendMessage}
+        image={image}
+        user={user}
+        setImage={setImage}
+        room={room}
+        roomID={roomID}
+      />
     </div>
   );
 }
