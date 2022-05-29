@@ -22,8 +22,6 @@ export default function Chat({ user, page }) {
   const messages = useChatMessages(roomID);
   const room = useRoom(roomID, user.uid);
 
-  console.log(messages, 'chat');
-
   function handleShowPreview(event) {
     const file = event.target.files[0];
     if (file) {
@@ -158,7 +156,13 @@ export default function Chat({ user, page }) {
       <div className="chat__body-container">
         <div className="chat__body" style={{ height: page.height - 68 }}>
           {messages && (
-            <ChatMessages messages={messages} user={user} roomId={roomID} />
+            <ChatMessages
+              messages={messages}
+              user={user}
+              roomId={roomID}
+              audioId={audioId}
+              setAudioId={setAudioId}
+            />
           )}
         </div>
       </div>
