@@ -21,7 +21,6 @@ export default function AudioPlayer({
   audioId,
 }) {
   const [state, dispatch] = useReducer(audioReducer, initialState);
-  console.log(state);
 
   const totalDuration = useRef('');
   const audio = useRef(new Audio(audioUrl));
@@ -121,6 +120,24 @@ export default function AudioPlayer({
     dispatch({ type: 'UPDATE_DURATION', payload: totalDuration.current });
   }
 
+  function scrubAudio(event) {
+    const value = event.target.value; // get value b/w 1-100
+    const { duration } = audio.current;
+
+    if (state.isMediaLoaded) {
+      const seekTo = duration * (value / 100);
+      audio.current.currentTime = seekTo;
+      dispatch({ type: 'UPDATE_SLIDERVALUE', payload: value });
+    }
+  }
+
+  useEffect(() => {
+    if (audioId !== id) {
+      audio.current.pause();
+      dispatch({ type: 'UPDATE_PLAYING', payload: false });
+    }
+  }, [audioId, id]);
+
   return (
     <>
       <div className={`audioplayer ${sender ? '' : 'audioplayer__alt'}`}>
@@ -142,6 +159,7 @@ export default function AudioPlayer({
             min="1"
             max="100"
             value={state.sliderValue}
+            onChange={scrubAudio}
             className="audioplayer__slider"
           />
         </div>
