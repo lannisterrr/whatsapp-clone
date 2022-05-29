@@ -10,6 +10,7 @@ import Compressor from 'compressorjs';
 import { v4 as uuid } from 'uuid';
 import './Chat.css';
 import { createTimeStamp, db, storage } from '../firebase';
+import useChatMessages from '../hooks/useChatMessages';
 
 export default function Chat({ user, page }) {
   const [image, setImage] = useState(null);
@@ -17,7 +18,10 @@ export default function Chat({ user, page }) {
   const [input, setInput] = useState('');
   const { roomID } = useParams();
   const history = useHistory();
+  const messages = useChatMessages(roomID);
   const room = useRoom(roomID, user.uid);
+
+  console.log(messages, 'chat');
 
   function handleShowPreview(event) {
     const file = event.target.files[0];
@@ -152,7 +156,9 @@ export default function Chat({ user, page }) {
 
       <div className="chat__body-container">
         <div className="chat__body" style={{ height: page.height - 68 }}>
-          <ChatMessages />
+          {messages && (
+            <ChatMessages messages={messages} user={user} roomId={roomID} />
+          )}
         </div>
       </div>
       <MediaPreview src={src} handleHidePreview={handleHidePreview} />

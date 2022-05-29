@@ -4,7 +4,7 @@ import {
   MicRounded,
   Send,
 } from '@material-ui/icons';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './ChatFooter.css';
 
 // for recording live audio two properties are necessary
@@ -21,6 +21,12 @@ export default function ChatFooter({
   setImage,
 }) {
   const [isRecording, setRecording] = useState(false);
+  const inputRef = useRef();
+
+  function handleStartRecording(event) {
+    event.preventDefault();
+    inputRef.current.focus(); //clicking on the button should open input audio recorder
+  }
 
   const btnIcons = (
     <>
@@ -48,6 +54,7 @@ export default function ChatFooter({
     <div className="chat__footer">
       <form>
         <input
+          ref={inputRef}
           value={input}
           onChange={!isRecording ? handleOnChange : null}
           type="text"
@@ -58,7 +65,7 @@ export default function ChatFooter({
             onClick={
               input.trim() || (input === '' && image)
                 ? handleSendMessage
-                : () => false
+                : handleStartRecording
             }
             type="submit"
             className="send__btn"
