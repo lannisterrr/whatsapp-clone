@@ -6,6 +6,18 @@ export default function audioReducer(state, action) {
         isLoaded: true,
       };
 
+    case 'UPDATE_PLAYING':
+      return {
+        ...state,
+        isPlaying: action.payload,
+      };
+
+    case 'UPDATE_SLIDERVALUE':
+      return {
+        ...state,
+        sliderValue: action.payload,
+      };
+
     case 'UPDATE_METADATA':
       return {
         ...state,

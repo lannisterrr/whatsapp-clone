@@ -94,16 +94,42 @@ export default function AudioPlayer({
     return `${minutes}:${seconds}`;
   }
 
-  console.log(state);
+  function playAudio() {
+    dispatch({ type: 'UPDATE_PLAYING', payload: true });
+    audio.current.play();
+    if (audioId !== id) {
+      setAudioId(id);
+    }
+    interval.current = setInterval(updateSlider, 100);
+  }
+
+  function updateSlider() {
+    let sliderPosition = 0;
+    const { currentTime, duration } = audio.current;
+    if (typeof duration === 'number') {
+      sliderPosition = currentTime * (100 / duration);
+      dispatch({ type: 'UPDATE_SLIDERVALUE', payload: sliderPosition });
+      const time = formatTime(currentTime);
+      dispatch({ type: 'UPDATE_DURATION', payload: time });
+    }
+  }
+
+  function stopAudio() {
+    audio.current.pause();
+    clearInterval(interval.current);
+    dispatch({ type: 'UPDATE_PLAYING', payload: false });
+    dispatch({ type: 'UPDATE_DURATION', payload: totalDuration.current });
+  }
+
   return (
     <>
       <div className={`audioplayer ${sender ? '' : 'audioplayer__alt'}`}>
         {!state.isMediaLoaded ? (
           <CircularProgress />
         ) : state.isPlaying ? (
-          <PauseRounded className="pause" />
+          <PauseRounded onClick={stopAudio} className="pause" />
         ) : !state.isPlaying ? (
-          <PlayArrowRounded />
+          <PlayArrowRounded onClick={playAudio} />
         ) : null}
 
         <div>
