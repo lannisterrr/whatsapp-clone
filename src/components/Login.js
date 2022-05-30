@@ -11,7 +11,7 @@ export default function Login() {
       <div className="login">
         <div className="login__container">
           <img src="./login-logo.png" alt="logo" />
-          <div className="login__text">Sign in to Whatsapp</div>
+          <div className="login__text">Sign in to TechChat</div>
           <Button onClick={handleLogin}>Sign in with Google</Button>
         </div>
       </div>
