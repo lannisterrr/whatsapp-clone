@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import './ChatFooter.css';
 import recordAudio from './recordAudio';
-import { db, createTimeStamp, audioStorage, storage } from '../firebase';
+import { db, createTimeStamp, audioStorage } from '../firebase';
 // for recording live audio two properties are necessary
 // navigator.mediaDevices and window.MediaRecorder
 
